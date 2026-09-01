@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claim Tag</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --bg: #f2ecdc;
+    --bg-dot: #e6dcbf;
+    --surface: #ffffff;
+    --surface-tag: #e4d2a6;
+    --ink: #202b3b;
+    --ink-soft: #5b6472;
+    --border: #d8cba8;
+    --accent: #c1441f;
+    --accent-strong: #9e3517;
+    --accent-ink: #ffffff;
+    --pending-bg: #f6e2b8;
+    --pending-ink: #7a5211;
+    --collected-bg: #dcecdf;
+    --collected-ink: #2e6a45;
+    --danger-bg: #f6dcd6;
+    --danger-ink: #93301a;
+    --shadow: 0 24px 48px -28px rgba(32, 43, 59, 0.35);
+    --focus: #2e6ac0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b222c;
+      --bg-dot: #232b37;
+      --surface: #242e3b;
+      --surface-tag: #362b1e;
+      --ink: #ece6d6;
+      --ink-soft: #a7aebb;
+      --border: #3a4454;
+      --accent: #e2632f;
+      --accent-strong: #f07d4c;
+      --accent-ink: #1b222c;
+      --pending-bg: #3c331a;
+      --pending-ink: #e3bd6f;
+      --collected-bg: #223629;
+      --collected-ink: #7fce9d;
+      --danger-bg: #3a241f;
+      --danger-ink: #e3a08c;
+      --shadow: 0 24px 48px -28px rgba(0, 0, 0, 0.6);
+      --focus: #6fa4e8;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #1b222c;
+    --bg-dot: #232b37;
+    --surface: #242e3b;
+    --surface-tag: #362b1e;
+    --ink: #ece6d6;
+    --ink-soft: #a7aebb;
+    --border: #3a4454;
+    --accent: #e2632f;
+    --accent-strong: #f07d4c;
+    --accent-ink: #1b222c;
+    --pending-bg: #3c331a;
+    --pending-ink: #e3bd6f;
+    --collected-bg: #223629;
+    --collected-ink: #7fce9d;
+    --danger-bg: #3a241f;
+    --danger-ink: #e3a08c;
+    --shadow: 0 24px 48px -28px rgba(0, 0, 0, 0.6);
+    --focus: #6fa4e8;
+  }
+
+  html { color-scheme: light dark; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(var(--bg-dot) 1px, transparent 1px) 0 0 / 22px 22px,
+      var(--bg);
+    color: var(--ink);
+    font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 18px 56px;
+  }
+
+  #app {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .wordmark {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 0 22px;
+  }
+
+  .wordmark .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .wordmark h1 {
+    font-family: "Big Shoulders Display", ui-sans-serif, sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: 0.01em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .tag {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 34px 28px 28px;
+    text-align: center;
+  }
+
+  .tag::before {
+    content: "";
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+  }
+
+  .tag-strip {
+    height: 6px;
+    margin: 0 -28px 26px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--surface-tag) 0 10px,
+      transparent 10px 18px
+    );
+    opacity: 0.8;
+  }
+
+  .kicker {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+  }
+
+  .tag h2 {
+    font-family: "Big Shoulders Display", ui-sans-serif, sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1.05;
+    text-wrap: balance;
+    margin: 0 0 22px;
+  }
+
+  .field {
+    text-align: left;
+    margin-bottom: 16px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+
+  .field .hint {
+    display: block;
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 20px;
+    letter-spacing: 0.04em;
+    padding: 13px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  input[type="text"]#name-input, input[type="number"]#qty-input {
+    font-family: "Work Sans", ui-sans-serif, sans-serif;
+    font-size: 15px;
+    letter-spacing: normal;
+  }
+
+  input:focus-visible, button:focus-visible, a:focus-visible {
+    outline: 2.5px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 16px;
+    font-weight: 700;
+    padding: 15px 18px;
+    border-radius: 10px;
+    transition: background-color 120ms ease, transform 120ms ease;
+  }
+
+  .btn-primary:hover:not(:disabled) { background: var(--accent-strong); }
+  .btn-primary:active:not(:disabled) { transform: translateY(1px); }
+
+  .btn-primary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .btn-link {
+    background: none;
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    padding: 10px 4px;
+  }
+
+  .btn-link:hover { color: var(--ink); }
+
+  .order-display {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    word-break: break-all;
+    margin: 0 0 14px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+
+  .pill.is-pending { background: var(--pending-bg); color: var(--pending-ink); }
+  .pill.is-collected { background: var(--collected-bg); color: var(--collected-ink); }
+
+  .stamp {
+    display: inline-block;
+    border: 3px solid var(--collected-ink);
+    color: var(--collected-ink);
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-family: "Big Shoulders Display", ui-sans-serif, sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: rotate(-4deg);
+    margin: 4px 0 18px;
+  }
+
+  .stamp.is-partial {
+    border-color: var(--pending-ink);
+    color: var(--pending-ink);
+  }
+
+  .segmented {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .segmented button {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 11px 8px;
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    background: var(--bg);
+    color: var(--ink-soft);
+    transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+  }
+
+  .segmented button.is-active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--surface);
+  }
+
+  textarea {
+    width: 100%;
+    font-family: "Work Sans", ui-sans-serif, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--ink);
+    resize: vertical;
+    min-height: 76px;
+  }
+
+  .meta-line {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0 0 4px;
+  }
+
+  .meta-line strong { color: var(--ink); font-weight: 600; }
+
+  .notice {
+    font-size: 13px;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 0 0 16px;
+    text-align: left;
+  }
+
+  .notice.is-error { background: var(--danger-bg); color: var(--danger-ink); }
+  .notice.is-info { background: var(--pending-bg); color: var(--pending-ink); }
+  .notice.is-config { background: var(--pending-bg); color: var(--pending-ink); font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; }
+
+  .footnote {
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .actions { display: flex; flex-direction: column; gap: 10px; }
+
+  .record-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 4px;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  .record-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: var(--bg);
+    cursor: pointer;
+    transition: border-color 120ms ease;
+  }
+
+  .record-item:hover, .record-item:focus-visible {
+    border-color: var(--ink-soft);
+    outline: none;
+  }
+
+  .record-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .record-number {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 14px;
+    font-weight: 600;
+    word-break: break-all;
+  }
+
+  .record-meta {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+
+  .record-pill {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--collected-bg);
+    color: var(--collected-ink);
+  }
+
+  .record-pill.is-partial { background: var(--pending-bg); color: var(--pending-ink); }
+
+  .spinner-line {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-align: center;
+    padding: 12px 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-primary { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script type="module">
+"use strict";
+
+/* =========================================================================
+   CONFIGURE ME before deploying.
+   ---------------------------------------------------------------------
+   Paste your Firebase project's web app config below (Firebase console →
+   Project settings → General → Your apps → SDK setup and configuration →
+   "Config"). Unlike an API token, this config is NOT a secret — Google's
+   own docs confirm it's safe to ship in client-side code. The real
+   security boundary is the Firestore security rules you deploy
+   separately (see firestore.rules and the README) — those rules, not
+   this config, are what actually stop someone from tampering with data.
+   ========================================================================= */
+var FIREBASE_CONFIG = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import {
+  getFirestore, doc, getDoc, collection, getDocs, query, orderBy, runTransaction
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+var isConfigured =
+  FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf("YOUR_") !== 0 &&
+  FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.projectId.indexOf("YOUR_") !== 0;
+
+var db = null;
+if (isConfigured) {
+  try {
+    var firebaseApp = initializeApp(FIREBASE_CONFIG);
+    db = getFirestore(firebaseApp);
+  } catch (e) {
+    isConfigured = false;
+  }
+}
+
+var RECORDS_COLLECTION = "records";
+var state = { records: {} }; // populated on demand (per-lookup or full list fetch)
+
+var view = {
+  screen: "lookup",
+  key: null,
+  display: null,
+  nameDraft: "",
+  mode: "full",
+  noteDraft: "",
+  qtyDraft: "",
+  numberDraft: "",
+  error: null,
+  info: null,
+  loading: false,
+  exporting: false,
+  listLoaded: false
+};
+
+function normalizeKey(raw) {
+  return raw.trim().toUpperCase().replace(/\s+/g, " ");
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+
+function formatWhen(iso) {
+  try {
+    var d = new Date(iso);
+    return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(d);
+  } catch (e) {
+    return iso;
+  }
+}
+
+function describeError(err) {
+  var code = err && err.code;
+  if (code === "permission-denied") return "the security rules rejected this — check firestore.rules was deployed";
+  if (code === "unavailable") return "couldn't reach Firestore — check your connection and try again";
+  if (code === "not-found") return "the Firestore database doesn't exist yet for this project";
+  return code || (err && err.message) || "unknown error";
+}
+
+function renderBody(s) {
+  var titleBlock =
+    '<div style="text-align:center;margin-bottom:22px;">' +
+    '<div class="kicker" style="margin-bottom:2px;">Collection desk</div>' +
+    '<h1 style="font-family:\'Big Shoulders Display\',sans-serif;font-weight:800;font-size:28px;margin:0;text-transform:uppercase;">Claim Tag</h1>' +
+    '</div>';
+
+  var body = "";
+
+  if (!isConfigured) {
+    body += '<div class="tag-strip"></div>';
+    body += '<div class="notice is-config">This page isn\'t configured yet. Edit the FIREBASE_CONFIG object at the top of index.html with your Firebase project\'s web app config, then redeploy.</div>';
+    body += '<p class="footnote">See the README that came with this file for step-by-step setup instructions.</p>';
+    return titleBlock + '<div class="tag">' + body + "</div>";
+  }
+
+  if (view.screen === "result" && view.key) {
+    var rec = s.records[view.key];
+    body += '<div class="tag-strip"></div>';
+
+    if (view.error) body += '<div class="notice is-error">' + escapeHtml(view.error) + "</div>";
+    if (view.info) body += '<div class="notice is-info">' + escapeHtml(view.info) + "</div>";
+
+    body += '<p class="kicker">Order number</p>';
+    body += '<p class="order-display">' + escapeHtml(view.display) + "</p>";
+
+    if (view.loading && !rec) {
+      body += '<p class="spinner-line">Checking status…</p>';
+    } else if (rec && rec.status) {
+      var isPartial = rec.status === "partial";
+      body += '<div class="stamp' + (isPartial ? " is-partial" : "") + '">' +
+        (isPartial ? "&#189; Partial pickup" : "&#10003; Collected") + "</div>";
+      body += '<p class="meta-line">Confirmed <strong>' + escapeHtml(formatWhen(rec.collectedAt)) + "</strong></p>";
+      if (rec.collectedBy) body += '<p class="meta-line">By <strong>' + escapeHtml(rec.collectedBy) + "</strong></p>";
+      if (!isPartial && rec.quantity != null) {
+        body += '<p class="meta-line"><strong>' + escapeHtml(rec.quantity) + "</strong> item" + (rec.quantity === 1 ? "" : "s") + " collected</p>";
+      }
+      if (isPartial && rec.note) body += '<p class="meta-line">Picked up: <strong>' + escapeHtml(rec.note) + "</strong></p>";
+      body += '<p class="footnote">This number has already been marked ' +
+        (isPartial ? "as a partial pickup" : "collected") +
+        ", so it can't be confirmed again.</p>";
+      body += '<div class="actions" style="margin-top:18px;"><button type="button" class="btn-link" data-action="back">Check a different number</button></div>';
+    } else {
+      body += '<span class="pill is-pending">Not yet collected</span>';
+      body += '<div class="field">' +
+        '<label for="name-input">Your name (optional)</label>' +
+        '<input type="text" id="name-input" maxlength="60" placeholder="For the pickup record" value="' + escapeHtml(view.nameDraft) + '">' +
+        "</div>";
+
+      body += '<div class="segmented" role="group" aria-label="Pickup type">' +
+        '<button type="button" data-action="mode-full" class="' + (view.mode === "full" ? "is-active" : "") + '">Full collection</button>' +
+        '<button type="button" data-action="mode-partial" class="' + (view.mode === "partial" ? "is-active" : "") + '">Partial pickup</button>' +
+        "</div>";
+
+      if (view.mode === "full") {
+        body += '<div class="field">' +
+          '<label for="qty-input">How many items were collected</label>' +
+          '<input type="number" id="qty-input" min="1" step="1" inputmode="numeric" placeholder="e.g. 3" value="' + escapeHtml(view.qtyDraft) + '">' +
+          "</div>";
+      } else {
+        body += '<div class="field">' +
+          '<label for="note-input">What was picked up</label>' +
+          '<textarea id="note-input" maxlength="200" placeholder="e.g. 2 of 3 boxes collected">' + escapeHtml(view.noteDraft) + "</textarea>" +
+          '<span class="hint">Describe what was taken so the rest is easy to track.</span>' +
+          "</div>";
+      }
+
+      var btnLabel = view.mode === "partial" ? "Confirm partial pickup" : "Confirm collection";
+      var disabled = "";
+      if (view.loading) { btnLabel = "Saving…"; disabled = "disabled"; }
+
+      body += '<div class="actions">' +
+        '<button type="button" class="btn-primary" data-action="confirm" ' + disabled + '>' + btnLabel + "</button>" +
+        '<button type="button" class="btn-link" data-action="back">Check a different number</button>' +
+        "</div>";
+      body += '<p class="footnote">Once confirmed — full or partial — this number is locked and nobody else will be able to confirm it again.</p>';
+    }
+  } else if (view.screen === "list") {
+    body += '<div class="tag-strip"></div>';
+    if (view.error) body += '<div class="notice is-error">' + escapeHtml(view.error) + "</div>";
+    if (view.info) body += '<div class="notice is-info">' + escapeHtml(view.info) + "</div>";
+    body += '<p class="kicker">All recorded numbers</p>';
+
+    if (!view.listLoaded) {
+      body += '<p class="spinner-line">Loading…</p>';
+    } else {
+      var listKeys = Object.keys(s.records);
+      if (!listKeys.length) {
+        body += '<p class="footnote">No numbers have been recorded yet.</p>';
+      } else {
+        listKeys.sort(function (a, b) {
+          var ra = s.records[a], rb = s.records[b];
+          var ta = ra && ra.collectedAt ? Date.parse(ra.collectedAt) : 0;
+          var tb = rb && rb.collectedAt ? Date.parse(rb.collectedAt) : 0;
+          return tb - ta;
+        });
+        body += '<div class="record-list">';
+        for (var li = 0; li < listKeys.length; li++) {
+          var lk = listKeys[li];
+          var lr = s.records[lk];
+          if (!lr) continue;
+          var lPartial = lr.status === "partial";
+          var metaBits = [];
+          metaBits.push(formatWhen(lr.collectedAt));
+          if (!lPartial && lr.quantity != null) metaBits.push(lr.quantity + " item" + (lr.quantity === 1 ? "" : "s"));
+          if (lPartial && lr.note) metaBits.push(lr.note);
+          body += '<div class="record-item" data-action="view-record" data-number="' + escapeHtml(lk) + '" role="button" tabindex="0">' +
+            '<div class="record-main">' +
+            '<span class="record-number">' + escapeHtml(lr.display || lk) + '</span>' +
+            '<span class="record-pill' + (lPartial ? " is-partial" : "") + '">' + (lPartial ? "Partial" : "Collected") + '</span>' +
+            "</div>" +
+            '<div class="record-meta">' + escapeHtml(metaBits.join(" · ")) + "</div>" +
+            "</div>";
+        }
+        body += "</div>";
+        body += '<div class="actions" style="margin-top:18px;">' +
+          '<button type="button" class="btn-primary" data-action="export-csv"' + (view.exporting ? " disabled" : "") + '>' +
+          (view.exporting ? "Preparing…" : "Export as CSV") + "</button>" +
+          "</div>";
+      }
+    }
+    body += '<div class="actions" style="margin-top:10px;"><button type="button" class="btn-link" data-action="back">Check a number</button></div>';
+  } else {
+    body += '<div class="tag-strip"></div>';
+    if (view.error) body += '<div class="notice is-error">' + escapeHtml(view.error) + "</div>";
+    body += '<h2>Enter an order number to look up its status</h2>';
+    body += '<form data-form="lookup">' +
+      '<div class="field">' +
+      '<label for="number-input">Order number</label>' +
+      '<input type="text" id="number-input" inputmode="numeric" autocomplete="off" placeholder="e.g. 10482" value="' + escapeHtml(view.numberDraft || "") + '" autofocus>' +
+      '<span class="hint">Letters and numbers are both fine.</span>' +
+      "</div>" +
+      '<button type="submit" class="btn-primary">Look up</button>' +
+      "</form>";
+    body += '<p class="footnote">Share this page\'s link with anyone who needs to confirm a collection. Once a number is marked collected, it stays locked for everyone.</p>';
+    body += '<div class="actions" style="margin-top:10px;"><button type="button" class="btn-link" data-action="view-list">View all recorded numbers</button></div>';
+  }
+
+  return titleBlock + '<div class="tag">' + body + "</div>";
+}
+
+function render() {
+  document.getElementById("app").innerHTML = renderBody(state);
+}
+
+function recordFromSnap(snap) {
+  if (!snap.exists()) return null;
+  return snap.data();
+}
+
+function goLookup(prefill) {
+  view.screen = "lookup";
+  view.key = null;
+  view.error = null;
+  view.info = null;
+  view.numberDraft = prefill || "";
+  render();
+  var el = document.getElementById("number-input");
+  if (el) el.focus();
+}
+
+async function goResult(rawNumber) {
+  var trimmed = (rawNumber || "").trim();
+  if (!trimmed) { view.error = "Enter an order number first."; render(); return; }
+  if (trimmed.length > 64) { view.error = "That number looks too long — double-check it."; render(); return; }
+
+  view.key = normalizeKey(trimmed);
+  view.display = trimmed;
+  view.screen = "result";
+  view.error = null;
+  view.info = null;
+  view.nameDraft = "";
+  view.mode = "full";
+  view.noteDraft = "";
+  view.qtyDraft = "";
+  view.loading = true;
+  delete state.records[view.key];
+  render();
+
+  try {
+    var snap = await getDoc(doc(db, RECORDS_COLLECTION, view.key));
+    var rec = recordFromSnap(snap);
+    if (rec) state.records[view.key] = rec;
+    view.loading = false;
+    render();
+  } catch (err) {
+    view.loading = false;
+    view.error = "Couldn't check that number just now. (error: " + describeError(err) + ")";
+    render();
+  }
+}
+
+async function attemptConfirm() {
+  if (view.loading) return;
+  var existing = state.records[view.key];
+  if (existing && existing.status) { render(); return; }
+
+  var nameEl = document.getElementById("name-input");
+  var nameVal = nameEl ? nameEl.value.trim().slice(0, 60) : "";
+
+  var noteVal = "";
+  var qtyVal = null;
+  if (view.mode === "partial") {
+    var noteEl = document.getElementById("note-input");
+    noteVal = noteEl ? noteEl.value.trim().slice(0, 200) : "";
+    if (!noteVal) {
+      view.error = "Describe what was picked up before confirming a partial pickup.";
+      view.noteDraft = noteEl ? noteEl.value : view.noteDraft;
+      render();
+      return;
+    }
+  } else {
+    var qtyEl = document.getElementById("qty-input");
+    var qtyRaw = qtyEl ? qtyEl.value.trim() : "";
+    var qtyNum = parseInt(qtyRaw, 10);
+    if (!qtyRaw || isNaN(qtyNum) || qtyNum <= 0 || String(qtyNum) !== qtyRaw) {
+      view.error = "Enter how many items were collected (a whole number greater than 0).";
+      view.qtyDraft = qtyEl ? qtyEl.value : view.qtyDraft;
+      render();
+      return;
+    }
+    qtyVal = qtyNum;
+  }
+
+  view.loading = true;
+  view.error = null;
+  render();
+
+  var key = view.key;
+  var newRecord = {
+    status: view.mode === "partial" ? "partial" : "collected",
+    collectedAt: new Date().toISOString(),
+    collectedBy: nameVal || null,
+    note: view.mode === "partial" ? noteVal : null,
+    quantity: view.mode === "partial" ? null : qtyVal,
+    display: view.display
+  };
+
+  try {
+    var ref = doc(db, RECORDS_COLLECTION, key);
+    var result = await runTransaction(db, async function (tx) {
+      var snap = await tx.get(ref);
+      if (snap.exists()) return { conflict: true, data: snap.data() };
+      tx.set(ref, newRecord);
+      return { conflict: false };
+    });
+
+    if (result.conflict) {
+      state.records[key] = result.data;
+      view.loading = false;
+      view.info = "Someone else just confirmed this number — showing the latest status.";
+      render();
+      return;
+    }
+
+    state.records[key] = newRecord;
+    view.loading = false;
+    view.error = null;
+    render();
+  } catch (err) {
+    view.loading = false;
+    view.error = "Couldn't save that just now — please try again. (error: " + describeError(err) + ")";
+    render();
+  }
+}
+
+async function loadList() {
+  view.listLoaded = false;
+  render();
+  try {
+    var q = query(collection(db, RECORDS_COLLECTION), orderBy("collectedAt", "desc"));
+    var snaps = await getDocs(q);
+    snaps.forEach(function (docSnap) {
+      state.records[docSnap.id] = docSnap.data();
+    });
+    view.listLoaded = true;
+    render();
+  } catch (err) {
+    view.listLoaded = true; // stop spinning; show the error instead
+    view.error = "Couldn't load the list just now. (error: " + describeError(err) + ")";
+    render();
+  }
+}
+
+function buildCsv(records) {
+  function csvField(v) {
+    var str = v == null ? "" : String(v);
+    if (/[",\r\n]/.test(str)) str = '"' + str.replace(/"/g, '""') + '"';
+    return str;
+  }
+  var rows = [["Order Number", "Status", "Quantity", "Note", "Collected By", "Confirmed At"]];
+  var keys = Object.keys(records);
+  keys.sort(function (a, b) {
+    var ra = records[a], rb = records[b];
+    var ta = ra && ra.collectedAt ? Date.parse(ra.collectedAt) : 0;
+    var tb = rb && rb.collectedAt ? Date.parse(rb.collectedAt) : 0;
+    return tb - ta;
+  });
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i], r = records[k];
+    if (!r) continue;
+    rows.push([
+      r.display || k,
+      r.status === "partial" ? "Partial pickup" : "Collected",
+      r.quantity != null ? r.quantity : "",
+      r.note || "",
+      r.collectedBy || "",
+      r.collectedAt || ""
+    ]);
+  }
+  return rows.map(function (row) { return row.map(csvField).join(","); }).join("\r\n");
+}
+
+function exportCsv() {
+  if (view.exporting) return;
+  var keys = Object.keys(state.records);
+  if (!keys.length) { view.info = "There's nothing to export yet."; render(); return; }
+
+  view.exporting = true;
+  view.error = null;
+  view.info = null;
+  render();
+
+  try {
+    var csv = buildCsv(state.records);
+    var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "claim-tag-export.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  } catch (e) {
+    view.error = "Couldn't export just now — please try again.";
+  }
+  view.exporting = false;
+  render();
+}
+
+document.addEventListener("submit", function (e) {
+  var form = e.target.closest && e.target.closest('[data-form="lookup"]');
+  if (!form) return;
+  e.preventDefault();
+  var input = document.getElementById("number-input");
+  goResult(input ? input.value : "");
+});
+
+document.addEventListener("click", function (e) {
+  var btn = e.target.closest && e.target.closest("[data-action]");
+  if (!btn) return;
+  var action = btn.getAttribute("data-action");
+  if (action === "back") goLookup();
+  else if (action === "confirm") attemptConfirm();
+  else if (action === "mode-full") { view.mode = "full"; render(); }
+  else if (action === "mode-partial") { view.mode = "partial"; render(); }
+  else if (action === "view-list") {
+    view.screen = "list";
+    view.error = null;
+    view.info = null;
+    render();
+    loadList();
+  }
+  else if (action === "view-record") {
+    var num = btn.getAttribute("data-number");
+    if (!num) return;
+    var recForNum = state.records[num];
+    view.key = num;
+    view.display = (recForNum && recForNum.display) || num;
+    view.screen = "result";
+    view.error = null;
+    view.info = null;
+    view.nameDraft = "";
+    view.mode = "full";
+    view.noteDraft = "";
+    view.qtyDraft = "";
+    render();
+  }
+  else if (action === "export-csv") exportCsv();
+});
+
+document.addEventListener("input", function (e) {
+  if (e.target && e.target.id === "name-input") view.nameDraft = e.target.value;
+  if (e.target && e.target.id === "number-input") view.numberDraft = e.target.value;
+  if (e.target && e.target.id === "note-input") view.noteDraft = e.target.value;
+  if (e.target && e.target.id === "qty-input") view.qtyDraft = e.target.value;
+});
+
+document.addEventListener("keydown", function (e) {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  var item = e.target.closest && e.target.closest('.record-item[data-action="view-record"]');
+  if (!item) return;
+  e.preventDefault();
+  item.click();
+});
+
+render();
+</script>
+</body>
+</html>
