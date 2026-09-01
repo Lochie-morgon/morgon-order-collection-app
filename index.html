@@ -445,24 +445,13 @@
 <script type="module">
 "use strict";
 
-/* =========================================================================
-   CONFIGURE ME before deploying.
-   ---------------------------------------------------------------------
-   Paste your Firebase project's web app config below (Firebase console →
-   Project settings → General → Your apps → SDK setup and configuration →
-   "Config"). Unlike an API token, this config is NOT a secret — Google's
-   own docs confirm it's safe to ship in client-side code. The real
-   security boundary is the Firestore security rules you deploy
-   separately (see firestore.rules and the README) — those rules, not
-   this config, are what actually stop someone from tampering with data.
-   ========================================================================= */
-var FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+const firebaseConfig = {
+  apiKey: "AIzaSyC1mSpWxr4PlLcVHIu8fdQSN2a1agO79R4",
+  authDomain: "morgon-order-lookup.firebaseapp.com",
+  projectId: "morgon-order-lookup",
+  storageBucket: "morgon-order-lookup.firebasestorage.app",
+  messagingSenderId: "728501753437",
+  appId: "1:728501753437:web:9fcfbc3f09c88b4c87dfb4"
 };
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
