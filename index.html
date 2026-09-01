@@ -471,13 +471,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 var isConfigured =
-  FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf("YOUR_") !== 0 &&
-  FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.projectId.indexOf("YOUR_") !== 0;
+  firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("YOUR_") !== 0 &&
+  firebaseConfig.projectId && firebaseConfig.projectId.indexOf("YOUR_") !== 0;
 
 var db = null;
 if (isConfigured) {
   try {
-    var firebaseApp = initializeApp(FIREBASE_CONFIG);
+    var firebaseApp = initializeApp(firebaseConfig);
     db = getFirestore(firebaseApp);
   } catch (e) {
     isConfigured = false;
