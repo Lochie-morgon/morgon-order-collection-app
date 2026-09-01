@@ -36,7 +36,7 @@ var isConfigured =
 var db = null;
 if (isConfigured) {
   try {
-    var firebaseApp = initializeApp(FIREBASE_CONFIG);
+    var firebaseApp = initializeApp(firebaseConfig);
     db = getFirestore(firebaseApp);
   } catch (e) {
     isConfigured = false;
