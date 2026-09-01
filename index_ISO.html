@@ -15,7 +15,7 @@
 <script type="module">
 "use strict";
 
-const firebaseConfig = {
+var firebaseConfig = {
   apiKey: "AIzaSyC1mSpWxr4PlLcVHIu8fdQSN2a1agO79R4",
   authDomain: "morgon-order-lookup.firebaseapp.com",
   projectId: "morgon-order-lookup",
@@ -30,8 +30,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 var isConfigured =
-  FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf("YOUR_") !== 0 &&
-  FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.projectId.indexOf("YOUR_") !== 0;
+  firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf("YOUR_") !== 0 &&
+  firebaseConfig.projectId && firebaseConfig.projectId.indexOf("YOUR_") !== 0;
 
 var db = null;
 if (isConfigured) {
